@@ -72,14 +72,11 @@ public class ItemOverlay extends ScrollPane {
         listView.setItems(observableList);
 
         listView.getSelectionModel().selectedItemProperty().addListener(
-                new ChangeListener() {
-                    @Override
-                    public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-                        setActiveTilePath(newValue.toString());
-                        ImageView imageView = new ImageView();
-                        imageView.setImage(new Image(new File("resources/" + activeTilePath).toURI().toString()));
-                        gridPane.add(imageView, 1, 1);
-                    }
+                (observable, oldValue, newValue) -> {
+                    setActiveTilePath(newValue.toString());
+                    ImageView imageView = new ImageView();
+                    imageView.setImage(new Image(new File("resources/" + activeTilePath).toURI().toString()));
+                    gridPane.add(imageView, 1, 1);
                 }
 
         );
