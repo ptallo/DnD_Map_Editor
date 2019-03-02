@@ -7,6 +7,9 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class DndEditor extends Application {
+
+    private Map map = new Map();
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         primaryStage.setTitle("RevUC 2019");
@@ -22,7 +25,6 @@ public class DndEditor extends Application {
     }
 
     private void drawOnCanvas(GraphicsContext gc) {
-        gc.setFill(Color.RED);
-        gc.fillRect(10, 10, 20, 20);
+        map.draw(gc);
     }
 }
