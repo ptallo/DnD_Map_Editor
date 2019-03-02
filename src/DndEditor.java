@@ -3,6 +3,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 public class DndEditor extends Application {
@@ -10,10 +11,19 @@ public class DndEditor extends Application {
     public void start(Stage primaryStage) throws Exception {
         primaryStage.setTitle("Drawing Operations Test");
         Group root = new Group();
-        Canvas canvas = new Canvas(300, 250);
+
+        Canvas canvas = new Canvas(1000, 650);
         GraphicsContext gc = canvas.getGraphicsContext2D();
+
+        ItemOverlay itemOverlay = new ItemOverlay();
+
+        HBox hBox = new HBox();
+        hBox.getChildren().add(canvas);
+        hBox.getChildren().add(itemOverlay);
+
         drawOnCanvas(gc);
-        root.getChildren().add(canvas);
+        root.getChildren().add(hBox);
+
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }
