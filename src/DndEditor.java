@@ -14,11 +14,15 @@ public class DndEditor extends Application {
         Canvas canvas = new Canvas(300, 250);
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
-        gc.setFill(Color.RED);
-        gc.fillRect(10, 10, 20, 20);
+        drawOnCanvas(gc);
 
         root.getChildren().add(canvas);
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
+    }
+
+    private void drawOnCanvas(GraphicsContext gc) {
+        gc.setFill(Color.RED);
+        gc.fillRect(10, 10, 20, 20);
     }
 }
