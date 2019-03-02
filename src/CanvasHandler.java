@@ -2,9 +2,7 @@ import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.GridPane;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 
@@ -12,7 +10,7 @@ import javafx.scene.shape.Shape;
 public class CanvasHandler {
     private Canvas canvas;
     private GraphicsContext gc;
-    private Map map;
+    private CanvasMap canvasMap;
 
     private Double dragX;
     private Double dragY;
@@ -20,7 +18,7 @@ public class CanvasHandler {
     public CanvasHandler(GridPane gp) {
         this.canvas = new Canvas(1000, 1000);
         this.gc = canvas.getGraphicsContext2D();
-        this.map = new Map();
+        this.canvasMap = new CanvasMap();
 
         canvas.heightProperty().bind(gp.heightProperty());
 
@@ -39,7 +37,7 @@ public class CanvasHandler {
                         canvas.getHeight()
                 );
 
-                Rectangle mapRectangle = map.getMapRectangle();
+                Rectangle mapRectangle = canvasMap.getMapRectangle();
 
                 Shape s1 = Shape.intersect(canvasRect, mapRectangle);
 
@@ -68,7 +66,7 @@ public class CanvasHandler {
             @Override
             public void handle(long now) {
                 gc.clearRect(-gc.getTransform().getTx(), -gc.getTransform().getTy(), canvas.getWidth(), canvas.getHeight());
-                map.draw(gc);
+                canvasMap.draw(gc);
             }
         }.start();
     }
