@@ -5,29 +5,55 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 
 
 public class CanvasHandler {
     private Canvas canvas;
     private GraphicsContext gc;
+    private Map map;
 
     private Double dragX;
     private Double dragY;
 
     public CanvasHandler(GridPane gp) {
         this.canvas = new Canvas(1000, 1000);
-        canvas.heightProperty().bind(gp.heightProperty());
-
         this.gc = canvas.getGraphicsContext2D();
+        this.map = new Map();
+
+        canvas.heightProperty().bind(gp.heightProperty());
 
         canvas.addEventHandler(MouseEvent.MOUSE_DRAGGED, event -> {
             if (dragX == null || dragY == null) {
                 dragX = event.getX();
                 dragY = event.getY();
             } else {
-                gc.translate(event.getX() - dragX, event.getY() - dragY);
-                dragX = event.getX();
-                dragY = event.getY();
+                double x = event.getX() - dragX;
+                double y = event.getY() - dragY;
+
+                Rectangle canvasRect = new Rectangle(
+                        -gc.getTransform().getTx() - x,
+                        -gc.getTransform().getTy() - y,
+                        canvas.getWidth(),
+                        canvas.getHeight()
+                );
+
+                Rectangle mapRectangle = map.getMapRectangle();
+
+                Shape s1 = Shape.intersect(canvasRect, mapRectangle);
+
+                if (s1.getBoundsInLocal().getWidth() == mapRectangle.getBoundsInLocal().getWidth() ||
+                        s1.getBoundsInLocal().getWidth() == canvasRect.getBoundsInLocal().getWidth()) {
+                    gc.translate(x, 0);
+                    dragX = event.getX();
+                }
+
+                if (s1.getBoundsInLocal().getHeight() == mapRectangle.getBoundsInLocal().getHeight() ||
+                        s1.getBoundsInLocal().getHeight() == canvasRect.getBoundsInLocal().getHeight()) {
+                    gc.translate(0, y);
+                    dragY = event.getY();
+                }
             }
         });
 
@@ -38,7 +64,6 @@ public class CanvasHandler {
     }
 
     public void draw() {
-        Map map = new Map();
         new AnimationTimer() {
             @Override
             public void handle(long now) {
