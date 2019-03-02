@@ -20,7 +20,7 @@ public class CanvasHandler {
         this.gc = canvas.getGraphicsContext2D();
         this.canvasMap = new CanvasMap();
 
-        canvas.heightProperty().bind(gp.heightProperty());
+        canvas.heightProperty().bind(gp.heightProperty().subtract(25));
 
         canvas.addEventHandler(MouseEvent.MOUSE_DRAGGED, event -> {
             if (dragX == null || dragY == null) {
