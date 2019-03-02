@@ -1,6 +1,8 @@
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
+import java.io.File;
+
 public class Tile {
     public final int TILE_WIDTH = 32;
     public final int TILE_HEIGHT = 32;
@@ -10,7 +12,8 @@ public class Tile {
 
 
     public Tile(String path) {
-        this.image = new Image("resources/tiles/" + path);
+        File temp = new File("resources/tiles/" + path);
+        this.image = new Image(temp.toURI().toString());
         this.pathable = true;
     }
 
