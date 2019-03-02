@@ -11,6 +11,7 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.security.PrivateKey;
 import java.util.*;
 
 public class ItemOverlay extends ScrollPane {
@@ -24,13 +25,17 @@ public class ItemOverlay extends ScrollPane {
     public ItemOverlay(Stage primaryStage, GridPane grid) {
         itemMap = new HashMap<>();
         itemMap.put("Dirt", "tiles/dirt.png");
+        itemMap.put("Forest", "tiles/forest.png");
         itemMap.put("Grass", "tiles/grass.png");
+        itemMap.put("Ocean", "tiles/ocean.png");
+        itemMap.put("Road", "tiles/road.png");
+
         gridPane = grid;
         createEditorMenu();
         createMenuBar(primaryStage);
     }
 
-    void createMenuBar(Stage primaryStage) {
+    private void createMenuBar(Stage primaryStage) {
         // Create menubar object
         menuBar = new MenuBar();
 
@@ -60,7 +65,7 @@ public class ItemOverlay extends ScrollPane {
         menuBar.prefWidthProperty().bind(primaryStage.widthProperty());
     }
 
-    void createEditorMenu() {
+    private void createEditorMenu() {
         listView = new ListView();
         List<String> l = new ArrayList<String>(itemMap.keySet());
         ObservableList<String> observableList = FXCollections.observableList(l);
@@ -70,9 +75,7 @@ public class ItemOverlay extends ScrollPane {
                 new ChangeListener() {
                     @Override
                     public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-                        System.out.println("ListView selection changed from oldValue = "
-                                + oldValue + " to newValue = " + newValue);
-                        setActiveTilePath(oldValue.toString());
+                        setActiveTilePath(newValue.toString());
                         ImageView imageView = new ImageView();
                         imageView.setImage(new Image(new File("resources/" + activeTilePath).toURI().toString()));
                         gridPane.add(imageView, 1, 1);
@@ -82,18 +85,22 @@ public class ItemOverlay extends ScrollPane {
         );
     }
 
-    void setActiveTilePath(String newValue) {
+    private void setActiveTilePath(String newValue) {
         activeTilePath = itemMap.get(newValue);
     }
 
-    ListView getEditorMenu() {
+    private String getActiveTilePath() {
+        return activeTilePath;
+    }
+
+    private ListView getEditorMenu() {
         return listView;
     }
 
-    void setEditorMode() {
+    private void setEditorMode() {
     }
 
-    MenuBar getMenuBar() {
+    private MenuBar getMenuBar() {
         return menuBar;
     }
 }
