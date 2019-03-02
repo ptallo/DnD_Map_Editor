@@ -3,6 +3,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 
 
@@ -13,8 +14,10 @@ public class CanvasHandler {
     private Double dragX;
     private Double dragY;
 
-    public CanvasHandler() {
-        this.canvas = new Canvas(1000, 650);
+    public CanvasHandler(GridPane gp) {
+        this.canvas = new Canvas(1000, 1000);
+        canvas.heightProperty().bind(gp.heightProperty());
+
         this.gc = canvas.getGraphicsContext2D();
 
         canvas.addEventHandler(MouseEvent.MOUSE_DRAGGED, event -> {
