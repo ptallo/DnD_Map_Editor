@@ -12,8 +12,7 @@ public class Tile {
 
 
     public Tile(String path) {
-        File temp = new File("resources/tiles/" + path);
-        this.image = new Image(temp.toURI().toString());
+        this.image = new Image(new File("resources/" + path).toURI().toString());
         this.pathable = true;
     }
 
