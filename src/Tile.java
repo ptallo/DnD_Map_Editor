@@ -4,8 +4,8 @@ import javafx.scene.image.Image;
 import java.io.File;
 
 public class Tile {
-    public final int TILE_WIDTH = 32;
-    public final int TILE_HEIGHT = 32;
+    static final int TILE_WIDTH = 32;
+    static final int TILE_HEIGHT = 32;
 
     private Image image;
     private Boolean pathable;
