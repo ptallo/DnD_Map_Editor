@@ -22,7 +22,7 @@ public class DndEditor extends Application {
         // Create grid pane and add item
         GridPane gridPane = new GridPane();
         ItemOverlay itemOverlay = new ItemOverlay(primaryStage, gridPane);
-        CanvasHandler handler = new CanvasHandler(gridPane);
+        CanvasHandler handler = new CanvasHandler(gridPane, itemOverlay);
 
         RowConstraints menuRow = new RowConstraints(25);
         gridPane.getRowConstraints().add(0, menuRow);

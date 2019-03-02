@@ -11,14 +11,16 @@ public class CanvasHandler {
     private Canvas canvas;
     private GraphicsContext gc;
     private CanvasMap canvasMap;
+    private ItemOverlay overlay;
 
     private Double dragX;
     private Double dragY;
 
-    public CanvasHandler(GridPane gp) {
+    public CanvasHandler(GridPane gp, ItemOverlay overlay) {
         this.canvas = new Canvas(1000, 1000);
         this.gc = canvas.getGraphicsContext2D();
         this.canvasMap = new CanvasMap();
+        this.overlay = overlay;
 
         canvas.heightProperty().bind(gp.heightProperty().subtract(25));
 
@@ -58,6 +60,13 @@ public class CanvasHandler {
         canvas.addEventHandler(MouseEvent.MOUSE_RELEASED, event -> {
             this.dragX = null;
             this.dragY = null;
+        });
+
+        canvas.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            canvasMap.setTile(overlay.getActiveTilePath(),
+                    (int) event.getX() / Tile.TILE_WIDTH,
+                    (int) event.getY() / Tile.TILE_HEIGHT
+            );
         });
     }
 

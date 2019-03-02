@@ -35,4 +35,8 @@ public class CanvasMap {
     public Rectangle getMapRectangle() {
         return new Rectangle(0, 0, tileMatrix.size() * Tile.TILE_WIDTH, tileMatrix.get(0).size() * Tile.TILE_HEIGHT);
     }
+
+    public void setTile(String path, int x, int y) {
+        tileMatrix.get(x).set(y, new Tile(path));
+    }
 }

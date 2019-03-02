@@ -89,10 +89,6 @@ public class ItemOverlay extends ScrollPane {
         activeTilePath = itemMap.get(newValue);
     }
 
-    private String getActiveTilePath() {
-        return activeTilePath;
-    }
-
     public ListView getEditorMenu() {
         return listView;
     }
@@ -102,5 +98,9 @@ public class ItemOverlay extends ScrollPane {
 
     public MenuBar getMenuBar() {
         return menuBar;
+    }
+
+    public String getActiveTilePath() {
+        return activeTilePath;
     }
 }
