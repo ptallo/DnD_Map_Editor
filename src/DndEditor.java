@@ -1,26 +1,36 @@
 import javafx.application.Application;
-import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.RowConstraints;
 import javafx.stage.Stage;
 
 public class DndEditor extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         primaryStage.setTitle("Drawing Operations Test");
-        Group root = new Group();
 
-        CanvasHandler handler = new CanvasHandler();
-        ItemOverlay itemOverlay = new ItemOverlay();
+        // Create grid pane and add item
+        GridPane gridPane = new GridPane();
+        ItemOverlay itemOverlay = new ItemOverlay(primaryStage, gridPane);
+        CanvasHandler handler = new CanvasHandler(gridPane);
 
-        HBox hBox = new HBox();
-        hBox.getChildren().add(handler.getCanvas());
-        hBox.getChildren().add(itemOverlay);
-        root.getChildren().add(hBox);
+        RowConstraints menuRow = new RowConstraints(25);
+        gridPane.getRowConstraints().add(0, menuRow);
+
+        RowConstraints canvasRow = new RowConstraints();
+        canvasRow.setVgrow(Priority.ALWAYS);
+        gridPane.getRowConstraints().add(1, canvasRow);
+
+        gridPane.add(itemOverlay.getMenuBar(), 0, 0 , 2, 1);
+        gridPane.add(handler.getCanvas(), 0, 1);
 
         handler.draw();
 
-        primaryStage.setScene(new Scene(root));
+        // For debugging
+        gridPane.setGridLinesVisible(true);
+
+        primaryStage.setScene(new Scene(gridPane));
         primaryStage.show();
 
         // set full screen
