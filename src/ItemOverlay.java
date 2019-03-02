@@ -93,14 +93,14 @@ public class ItemOverlay extends ScrollPane {
         return activeTilePath;
     }
 
-    private ListView getEditorMenu() {
+    public ListView getEditorMenu() {
         return listView;
     }
 
-    private void setEditorMode() {
+    public void setEditorMode() {
     }
 
-    private MenuBar getMenuBar() {
+    public MenuBar getMenuBar() {
         return menuBar;
     }
 }
