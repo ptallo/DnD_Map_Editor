@@ -35,7 +35,7 @@ public class CanvasHandler {
     }
 
     public void draw() {
-        Map map = new Map();
+        CanvasMap map = new CanvasMap();
         new AnimationTimer() {
             @Override
             public void handle(long now) {

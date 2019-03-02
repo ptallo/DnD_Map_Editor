@@ -3,11 +3,11 @@ import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 
-public class Map {
+public class CanvasMap {
 
     private ArrayList<ArrayList<Tile>> tileMatrix = new ArrayList<>();
 
-    public Map() {
+    public CanvasMap() {
         for (int i = 0; i < 10; i++) {
             ArrayList<Tile> row = new ArrayList<>();
             for (int j = 0; j < 10; j++) {
