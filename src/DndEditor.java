@@ -26,6 +26,9 @@ public class DndEditor extends Application {
 
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
+
+        // set full screen
+        primaryStage.setFullScreen(true);
     }
 
     private void drawOnCanvas(GraphicsContext gc) {
