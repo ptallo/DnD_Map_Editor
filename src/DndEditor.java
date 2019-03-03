@@ -31,10 +31,24 @@ public class DndEditor extends Application {
         canvasRow.setVgrow(Priority.ALWAYS);
         gridPane.getRowConstraints().add(1, canvasRow);
 
+        RowConstraints editorRow = new RowConstraints();
+        editorRow.setPercentHeight(50);
+        gridPane.getRowConstraints().add(2, editorRow);
+
+        ColumnConstraints canvasConstraint = new ColumnConstraints();
+        canvasConstraint.setPercentWidth(85);
+
+        ColumnConstraints editorConstraint = new ColumnConstraints();
+        editorConstraint.setPercentWidth(15);
+
+        gridPane.getColumnConstraints().addAll(canvasConstraint, editorConstraint);
+
         gridPane.add(itemOverlay.getMenuBar(), 0, 0 , 2, 1);
         handler.draw();
         gridPane.add(handler.getCanvas(), 0, 1, 1, 2);
         ImageView imageView = new ImageView();
+        imageView.setFitHeight(200);
+        imageView.setFitWidth(200);
         imageView.setImage(new Image(new File("resources/tiles/dirt.png").toURI().toString()));
         gridPane.add(imageView, 1, 1);
         gridPane.add(itemOverlay.getEditorMenu(), 1, 2);

@@ -62,6 +62,7 @@ public class ItemOverlay extends ScrollPane {
 
         // Add to menu bar
         menuBar.getMenus().addAll(file, edit, view);
+        menuBar.prefHeight(25);
         menuBar.prefWidthProperty().bind(primaryStage.widthProperty());
     }
 
@@ -70,12 +71,15 @@ public class ItemOverlay extends ScrollPane {
         List<String> l = new ArrayList<String>(itemMap.keySet());
         ObservableList<String> observableList = FXCollections.observableList(l);
         listView.setItems(observableList);
+        listView.setPrefHeight(observableList.size() * 24 + 2);
 
         listView.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> {
                     setActiveTilePath(newValue.toString());
                     ImageView imageView = new ImageView();
                     imageView.setImage(new Image(new File("resources/" + activeTilePath).toURI().toString()));
+                    imageView.setFitHeight(200);
+                    imageView.setFitWidth(200);
                     gridPane.add(imageView, 1, 1);
                 }
 
