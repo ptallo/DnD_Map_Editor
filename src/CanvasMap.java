@@ -26,8 +26,6 @@ public class CanvasMap {
             }
             tileMatrix.add(row);
         }
-
-        printToPdf("test.png");
     }
 
     public void draw(GraphicsContext gc) {
@@ -48,7 +46,7 @@ public class CanvasMap {
         tileMatrix.get(x).set(y, new Tile(path));
     }
 
-    public void printToPdf(String path) {
+    public void exportMap(String path) {
         WritableImage writableImage = new WritableImage(
                 tileMatrix.size() * Tile.TILE_WIDTH,
                 tileMatrix.get(0).size() * Tile.TILE_HEIGHT
