@@ -61,17 +61,17 @@ public class ItemOverlay extends ScrollPane {
                 Platform.runLater(() ->{
                     ButtonType yes = new ButtonType("Yes");
                     ButtonType no = new ButtonType("No");
-                    Alert alert = new Alert(Alert.AlertType.NONE, "Promote pawn to:", yes, no);
-                    alert.setTitle("Title");
-                    alert.setHeaderText("My header text");
+                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Would you like to save?", yes, no);
+                    alert.initOwner(primaryStage);
+                    alert.setTitle("Save");
+                    alert.setHeaderText("Save map to mapImage.png");
                     alert.setResizable(true);
-                    alert.setContentText("Content text");
                     alert.showAndWait().ifPresent(response -> {
                         if (response == yes) {
                             alert.close();
                             canvasMap.exportMap("mapImage.png");
-                        } else if (response == no) {
-                            // promote to rook...
+                        } else {
+                            alert.close();
                         }
                     });
                 });
