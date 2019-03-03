@@ -1,6 +1,3 @@
-import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -16,11 +13,11 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import java.awt.*;
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.security.PrivateKey;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.List;
 
@@ -29,17 +26,19 @@ public class ItemOverlay extends ScrollPane {
     private MenuBar menuBar;
     private GridPane gridPane;
     private ListView listView;
-    private Map<String, String> itemMap;
+    private Map<String, String> tileMap;
     private String activeTilePath = "tiles/dirt.png";
     private CanvasHandler canvasHandler;
 
     public ItemOverlay(Stage primaryStage, GridPane grid) {
-        itemMap = new HashMap<>();
-        itemMap.put("Dirt", "tiles/dirt.png");
-        itemMap.put("Forest", "tiles/forest.png");
-        itemMap.put("Grass", "tiles/grass.png");
-        itemMap.put("Ocean", "tiles/ocean.png");
-        itemMap.put("Road", "tiles/road.png");
+        tileMap = new HashMap<>();
+//        tileMap.put("Dirt", "tiles/dirt.png");
+//        tileMap.put("Forest", "tiles/forest.png");
+//        tileMap.put("Grass", "tiles/grass.png");
+//        tileMap.put("Ocean", "tiles/ocean.png");
+//        tileMap.put("Road", "tiles/road.png");
+
+        populateItemMap();
 
         gridPane = grid;
         createEditorMenu();
@@ -62,6 +61,7 @@ public class ItemOverlay extends ScrollPane {
         toggleGroup.getToggles().addAll(editorMode, gameMode);
 
         MenuItem export = new MenuItem("Export Map");
+        MenuItem importTile = new MenuItem("Import Tile");
         MenuItem load = new MenuItem("Load Map");
         MenuItem save = new MenuItem("Save Map");
 
@@ -106,6 +106,24 @@ public class ItemOverlay extends ScrollPane {
             }
         });
 
+        importTile.setOnAction(event -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Import Tile");
+            File loadFile = fileChooser.showOpenDialog(primaryStage);
+            if (loadFile != null) {
+                try {
+                    File tempFile = new File("resources/tiles/" + loadFile.getName());
+                    Files.copy(loadFile.toPath(), tempFile.toPath());
+                    tileMap.put(tempFile.getName().split("\\.")[0], "tiles/" + tempFile.getName());
+                    listView.getItems().add(tempFile.getName().split("\\.")[0]);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        });
 
         editorMode.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -115,7 +133,7 @@ public class ItemOverlay extends ScrollPane {
         });
 
         // Add submenus to parent button
-        file.getItems().addAll(save, load, export);
+        file.getItems().addAll(save, load, export, importTile);
         view.getItems().addAll(gameMode, editorMode);
 
         // Add to menu bar
@@ -126,7 +144,7 @@ public class ItemOverlay extends ScrollPane {
 
     private void createEditorMenu() {
         listView = new ListView();
-        List<String> l = new ArrayList<String>(itemMap.keySet());
+        List<String> l = new ArrayList<String>(tileMap.keySet());
         ObservableList<String> observableList = FXCollections.observableList(l);
         listView.setItems(observableList);
         listView.setPrefHeight(observableList.size() * 24 + 2);
@@ -145,7 +163,7 @@ public class ItemOverlay extends ScrollPane {
     }
 
     private void setActiveTilePath(String newValue) {
-        activeTilePath = itemMap.get(newValue);
+        activeTilePath = tileMap.get(newValue);
     }
 
     public ListView getEditorMenu() {
@@ -165,5 +183,18 @@ public class ItemOverlay extends ScrollPane {
 
     public String getActiveTilePath() {
         return activeTilePath;
+    }
+
+    private void populateItemMap() {
+        File folder = new File("resources/tiles/");
+        File[] listOfFiles = folder.listFiles();
+
+        if (listOfFiles != null) {
+            for (File file : listOfFiles) {
+                if (file.isFile()) {
+                    tileMap.put(file.getName().split("\\.")[0], "tiles/" + file.getName());
+                }
+            }
+        }
     }
 }
