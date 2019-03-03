@@ -2,17 +2,20 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
 import java.io.File;
+import java.io.Serializable;
 
-public class Tile {
+public class Tile implements Serializable {
     static final int TILE_WIDTH = 32;
     static final int TILE_HEIGHT = 32;
 
+    private String path;
     private Image image;
     private Boolean pathable;
 
 
     public Tile(String path) {
-        this.image = new Image(new File("resources/" + path).toURI().toString());
+        this.path = "resources/" + path;
+        this.image = new Image(new File(this.path).toURI().toString());
         this.pathable = true;
     }
 
@@ -22,5 +25,9 @@ public class Tile {
 
     public Image getImage() {
         return image;
+    }
+
+    public String getPath() {
+        return path;
     }
 }

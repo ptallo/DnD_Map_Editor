@@ -1,3 +1,4 @@
+import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -6,9 +7,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 import javax.imageio.ImageIO;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Set;
 
 public class CanvasMap {
 
@@ -80,5 +82,40 @@ public class CanvasMap {
                         test.getPixelReader().getColor(x, y));
             }
         }
+    }
+
+    public void saveMap(String path) throws FileNotFoundException {
+        HashMap<String, String> pathToCodeMap = new HashMap<>();
+
+        for (ArrayList<Tile> aTileMatrix : tileMatrix) {
+            for (int j = 0; j < aTileMatrix.size(); j++) {
+                String p = aTileMatrix.get(j).getPath();
+                if (!pathToCodeMap.keySet().contains(p)) {
+                    String len = String.valueOf(pathToCodeMap.values().size());
+                    pathToCodeMap.put(p, len);
+                }
+            }
+        }
+
+        File file = new File("resources/maps/" + path);
+        PrintWriter pw = new PrintWriter(file);
+
+        for (String p : pathToCodeMap.keySet()) {
+            pw.write(p + ", " + pathToCodeMap.get(p) + "\n");
+        }
+        pw.write("\n");
+
+        for (ArrayList<Tile> row : tileMatrix) {
+            for (Tile tile : row) {
+                pw.write(pathToCodeMap.get(tile.getPath()));
+            }
+            pw.write("\n");
+        }
+
+        pw.close();
+    }
+
+    public void loadMap(String path) {
+
     }
 }
