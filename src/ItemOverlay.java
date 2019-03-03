@@ -1,3 +1,4 @@
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -10,6 +11,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.security.PrivateKey;
 import java.util.*;
@@ -21,6 +23,7 @@ public class ItemOverlay extends ScrollPane {
     private ListView listView;
     private Map<String, String> itemMap;
     private String activeTilePath = "tiles/dirt.png";
+    private CanvasMap canvasMap;
 
     public ItemOverlay(Stage primaryStage, GridPane grid) {
         itemMap = new HashMap<>();
@@ -50,6 +53,33 @@ public class ItemOverlay extends ScrollPane {
         RadioMenuItem gameMode = new RadioMenuItem("Game Mode");
         toggleGroup.getToggles().addAll(editorMode, gameMode);
 
+        MenuItem export = new MenuItem("Export Map");
+
+        export.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                Platform.runLater(() ->{
+                    ButtonType yes = new ButtonType("Yes");
+                    ButtonType no = new ButtonType("No");
+                    Alert alert = new Alert(Alert.AlertType.NONE, "Promote pawn to:", yes, no);
+                    alert.setTitle("Title");
+                    alert.setHeaderText("My header text");
+                    alert.setResizable(true);
+                    alert.setContentText("Content text");
+                    alert.showAndWait().ifPresent(response -> {
+                        if (response == yes) {
+                            alert.close();
+                            canvasMap.exportMap("mapImage.png");
+                        } else if (response == no) {
+                            // promote to rook...
+                        }
+                    });
+                });
+            }
+        });
+
+
+
         editorMode.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -58,6 +88,7 @@ public class ItemOverlay extends ScrollPane {
         });
 
         // Add submenus to parent button
+        file.getItems().add(export);
         view.getItems().addAll(gameMode, editorMode);
 
         // Add to menu bar
@@ -95,6 +126,10 @@ public class ItemOverlay extends ScrollPane {
     }
 
     public void setEditorMode() {
+    }
+
+    public void setCanvasMap(CanvasMap cmap){
+        canvasMap = cmap;
     }
 
     public MenuBar getMenuBar() {

@@ -92,4 +92,8 @@ public class CanvasHandler {
     public Canvas getCanvas() {
         return canvas;
     }
+
+    public CanvasMap getCanvasMap() {
+        return canvasMap;
+    }
 }

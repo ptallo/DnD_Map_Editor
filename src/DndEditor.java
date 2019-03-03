@@ -53,6 +53,10 @@ public class DndEditor extends Application {
         gridPane.add(imageView, 1, 1);
         gridPane.add(itemOverlay.getEditorMenu(), 1, 2);
 
+        handler.draw();
+
+        itemOverlay.setCanvasMap(handler.getCanvasMap());
+
         // For debugging
         gridPane.setGridLinesVisible(true);
 
