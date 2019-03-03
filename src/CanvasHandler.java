@@ -39,8 +39,10 @@ public class CanvasHandler {
         });
 
         canvas.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            setTile(overlay, event);
-            draw();
+            if (!event.isControlDown()) {
+                setTile(overlay, event);
+                draw();
+            }
         });
     }
 
