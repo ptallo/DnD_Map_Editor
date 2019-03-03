@@ -6,16 +6,23 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.*;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+import java.awt.*;
 import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.security.PrivateKey;
 import java.util.*;
+import java.util.List;
 
 public class ItemOverlay extends ScrollPane {
 
@@ -24,7 +31,7 @@ public class ItemOverlay extends ScrollPane {
     private ListView listView;
     private Map<String, String> itemMap;
     private String activeTilePath = "tiles/dirt.png";
-    private CanvasMap canvasMap;
+    private CanvasHandler canvasHandler;
 
     public ItemOverlay(Stage primaryStage, GridPane grid) {
         itemMap = new HashMap<>();
@@ -58,36 +65,52 @@ public class ItemOverlay extends ScrollPane {
         MenuItem load = new MenuItem("Load Map");
         MenuItem save = new MenuItem("Save Map");
 
-        save.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                FileChooser fileChooser = new FileChooser();
-                fileChooser.setTitle("Save Map");
-                fileChooser.setInitialFileName("Map");
+        save.setOnAction(event -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Save Map");
+            fileChooser.setInitialFileName("Map.txt");
+            File savedFile = fileChooser.showSaveDialog(primaryStage);
+
+            if (savedFile != null) {
+                try {
+                    canvasHandler.getCanvasMap().saveMap(savedFile);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
-        export.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                Platform.runLater(() ->{
-                    ButtonType yes = new ButtonType("Yes");
-                    ButtonType no = new ButtonType("No");
-                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Would you like to save?", yes, no);
-                    alert.initOwner(primaryStage);
-                    alert.setTitle("Save");
-                    alert.setHeaderText("Save map to mapImage.png");
-                    alert.setResizable(true);
-                    alert.showAndWait().ifPresent(response -> {
-                        if (response == yes) {
-                            alert.close();
-                            canvasMap.exportMap("mapImage.png");
-                        } else {
-                            alert.close();
-                        }
-                    });
-                });
+        load.setOnAction(event -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Load Map");
+            File loadFile = fileChooser.showOpenDialog(primaryStage);
+
+            if (loadFile != null) {
+                try {
+                    canvasHandler.getCanvasMap().loadMap(loadFile);
+                    canvasHandler.draw();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
             }
+        });
+
+        export.setOnAction(event -> {
+            ButtonType yes = new ButtonType("Yes");
+            ButtonType no = new ButtonType("No");
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Would you like to save?", yes, no);
+            alert.initOwner(primaryStage);
+            alert.setTitle("Save");
+            alert.setHeaderText("Save map to mapImage.png");
+            alert.setResizable(true);
+            alert.showAndWait().ifPresent(response -> {
+                if (response == yes) {
+                    alert.close();
+                    canvasHandler.getCanvasMap().exportMap("mapImage.png");
+                } else {
+                    alert.close();
+                }
+            });
         });
 
 
@@ -139,8 +162,8 @@ public class ItemOverlay extends ScrollPane {
     public void setEditorMode() {
     }
 
-    public void setCanvasMap(CanvasMap cmap){
-        canvasMap = cmap;
+    public void setCanvasHandler(CanvasHandler cHandler){
+        canvasHandler = cHandler;
     }
 
     public MenuBar getMenuBar() {

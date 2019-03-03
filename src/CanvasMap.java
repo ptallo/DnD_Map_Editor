@@ -1,4 +1,3 @@
-import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -7,11 +6,13 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 import javax.imageio.ImageIO;
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
-import java.util.Set;
 
 public class CanvasMap {
 
@@ -19,15 +20,15 @@ public class CanvasMap {
 
     public CanvasMap() {
         for (int i = 0; i < 50; i++) {
-            ArrayList<Tile> row = new ArrayList<>();
+            ArrayList<Tile> column = new ArrayList<>();
             for (int j = 0; j < 50; j++) {
-                if (i == 0 || j == 0 || i == 49 || j == 49) {
-                    row.add(new Tile("tiles/dirt.png"));
+                if (i == 0 || i == 49) {
+                    column.add(new Tile("tiles/dirt.png"));
                 } else {
-                    row.add(new Tile("tiles/grass.png"));
+                    column.add(new Tile("tiles/grass.png"));
                 }
             }
-            tileMatrix.add(row);
+            tileMatrix.add(column);
         }
     }
 
@@ -85,12 +86,12 @@ public class CanvasMap {
         }
     }
 
-    public void saveMap(String path) throws FileNotFoundException {
+    public void saveMap(File file) throws FileNotFoundException {
         HashMap<String, String> pathToCodeMap = new HashMap<>();
 
-        for (ArrayList<Tile> aTileMatrix : tileMatrix) {
-            for (int j = 0; j < aTileMatrix.size(); j++) {
-                String p = aTileMatrix.get(j).getPath();
+        for (int i = 0; i < tileMatrix.size(); i++) {
+            for (int j = 0; j < tileMatrix.get(i).size(); j++) {
+                String p = tileMatrix.get(i).get(j).getPath();
                 if (!pathToCodeMap.keySet().contains(p)) {
                     String len = String.valueOf(pathToCodeMap.values().size());
                     pathToCodeMap.put(p, len);
@@ -98,7 +99,6 @@ public class CanvasMap {
             }
         }
 
-        File file = new File("resources/maps/" + path);
         PrintWriter pw = new PrintWriter(file);
 
         for (String p : pathToCodeMap.keySet()) {
@@ -106,9 +106,9 @@ public class CanvasMap {
         }
         pw.write("\n");
 
-        for (ArrayList<Tile> row : tileMatrix) {
-            for (Tile tile : row) {
-                pw.write(pathToCodeMap.get(tile.getPath()));
+        for (int i = 0; i < tileMatrix.size(); i++) {
+            for (int j = 0; j < tileMatrix.get(i).size(); j++) {
+                pw.write(pathToCodeMap.get(tileMatrix.get(i).get(j).getPath()) + ",");
             }
             pw.write("\n");
         }
@@ -116,8 +116,8 @@ public class CanvasMap {
         pw.close();
     }
 
-    public void loadMap(String path) throws FileNotFoundException {
-        Scanner scanner = new Scanner(new File("resources/maps/" + path));
+    public void loadMap(File file) throws FileNotFoundException {
+        Scanner scanner = new Scanner(file);
         HashMap<String, String> codeToPathMap = new HashMap<>();
 
         String line;
@@ -133,14 +133,15 @@ public class CanvasMap {
         tileMatrix = new ArrayList<>();
         while (scanner.hasNext()) {
             line = scanner.nextLine();
-            ArrayList<Tile> row = new ArrayList<>();
-            for (char c : line.toCharArray()) {
+            String[] tileCodes = line.split(",");
+            ArrayList<Tile> column = new ArrayList<>();
+            for (String c : tileCodes) {
                 String path1 = codeToPathMap.get(String.valueOf(c));
                 String[] pathAttributes = path1.split("/");
                 path1 = pathAttributes[1] + "/" + pathAttributes[2];
-                row.add(new Tile(path1));
+                column.add(new Tile(path1));
             }
-            tileMatrix.add(row);
+            tileMatrix.add(column);
         }
     }
 }

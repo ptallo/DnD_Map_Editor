@@ -55,7 +55,7 @@ public class DndEditor extends Application {
 
         handler.draw();
 
-        itemOverlay.setCanvasMap(handler.getCanvasMap());
+        itemOverlay.setCanvasHandler(handler);
 
         // For debugging
         gridPane.setGridLinesVisible(true);
