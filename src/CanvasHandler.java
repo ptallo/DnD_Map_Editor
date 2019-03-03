@@ -25,35 +25,10 @@ public class CanvasHandler {
         canvas.heightProperty().bind(gp.heightProperty().subtract(25));
 
         canvas.addEventHandler(MouseEvent.MOUSE_DRAGGED, event -> {
-            if (dragX == null || dragY == null) {
-                dragX = event.getX();
-                dragY = event.getY();
+            if (event.isControlDown()) {
+                handleDragMap(event);
             } else {
-                double x = event.getX() - dragX;
-                double y = event.getY() - dragY;
-
-                Rectangle canvasRect = new Rectangle(
-                        -gc.getTransform().getTx() - x,
-                        -gc.getTransform().getTy() - y,
-                        canvas.getWidth(),
-                        canvas.getHeight()
-                );
-
-                Rectangle mapRectangle = canvasMap.getMapRectangle();
-
-                Shape s1 = Shape.intersect(canvasRect, mapRectangle);
-
-                if (s1.getBoundsInLocal().getWidth() == mapRectangle.getBoundsInLocal().getWidth() ||
-                        s1.getBoundsInLocal().getWidth() == canvasRect.getBoundsInLocal().getWidth()) {
-                    gc.translate(x, 0);
-                    dragX = event.getX();
-                }
-
-                if (s1.getBoundsInLocal().getHeight() == mapRectangle.getBoundsInLocal().getHeight() ||
-                        s1.getBoundsInLocal().getHeight() == canvasRect.getBoundsInLocal().getHeight()) {
-                    gc.translate(0, y);
-                    dragY = event.getY();
-                }
+                drawTile(overlay, event);
             }
         });
 
@@ -61,13 +36,46 @@ public class CanvasHandler {
             this.dragX = null;
             this.dragY = null;
         });
+    }
 
-        canvas.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            canvasMap.setTile(overlay.getActiveTilePath(),
-                    (int) event.getX() / Tile.TILE_WIDTH,
-                    (int) event.getY() / Tile.TILE_HEIGHT
+    private void drawTile(ItemOverlay overlay, MouseEvent event) {
+        canvasMap.setTile(overlay.getActiveTilePath(),
+                (int) (event.getX() - gc.getTransform().getTx()) / Tile.TILE_WIDTH,
+                (int) (event.getY() - gc.getTransform().getTy()) / Tile.TILE_HEIGHT
+        );
+    }
+
+    private void handleDragMap(MouseEvent event) {
+        if (dragX == null || dragY == null) {
+            dragX = event.getX();
+            dragY = event.getY();
+        } else {
+            double x = event.getX() - dragX;
+            double y = event.getY() - dragY;
+
+            Rectangle canvasRect = new Rectangle(
+                    -gc.getTransform().getTx() - x,
+                    -gc.getTransform().getTy() - y,
+                    canvas.getWidth(),
+                    canvas.getHeight()
             );
-        });
+
+            Rectangle mapRectangle = canvasMap.getMapRectangle();
+
+            Shape s1 = Shape.intersect(canvasRect, mapRectangle);
+
+            if (s1.getBoundsInLocal().getWidth() == mapRectangle.getBoundsInLocal().getWidth() ||
+                    s1.getBoundsInLocal().getWidth() == canvasRect.getBoundsInLocal().getWidth()) {
+                gc.translate(x, 0);
+                dragX = event.getX();
+            }
+
+            if (s1.getBoundsInLocal().getHeight() == mapRectangle.getBoundsInLocal().getHeight() ||
+                    s1.getBoundsInLocal().getHeight() == canvasRect.getBoundsInLocal().getHeight()) {
+                gc.translate(0, y);
+                dragY = event.getY();
+            }
+        }
     }
 
     public void draw() {
