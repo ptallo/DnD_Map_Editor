@@ -19,4 +19,8 @@ public class Tile {
     public void draw(GraphicsContext gc, int x, int y) {
         gc.drawImage(image, x * TILE_WIDTH, y * TILE_HEIGHT);
     }
+
+    public Image getImage() {
+        return image;
+    }
 }
