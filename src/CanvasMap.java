@@ -50,7 +50,7 @@ public class CanvasMap {
         tileMatrix.get(x).set(y, new Tile(path));
     }
 
-    public void exportMap(String path) {
+    public void exportMap(File file) {
         WritableImage writableImage = new WritableImage(
                 tileMatrix.size() * Tile.TILE_WIDTH,
                 tileMatrix.get(0).size() * Tile.TILE_HEIGHT
@@ -67,9 +67,8 @@ public class CanvasMap {
             }
         }
 
-        File writeTo = new File(path);
         try {
-            ImageIO.write(SwingFXUtils.fromFXImage(writableImage, null), path.split("\\.")[1], writeTo);
+            ImageIO.write(SwingFXUtils.fromFXImage(writableImage, null), file.toString().split("\\.")[1], file);
         } catch (IOException e) {
             e.printStackTrace();
         }

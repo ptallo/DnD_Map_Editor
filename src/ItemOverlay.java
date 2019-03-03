@@ -96,21 +96,14 @@ public class ItemOverlay extends ScrollPane {
         });
 
         export.setOnAction(event -> {
-            ButtonType yes = new ButtonType("Yes");
-            ButtonType no = new ButtonType("No");
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Would you like to save?", yes, no);
-            alert.initOwner(primaryStage);
-            alert.setTitle("Save");
-            alert.setHeaderText("Save map to mapImage.png");
-            alert.setResizable(true);
-            alert.showAndWait().ifPresent(response -> {
-                if (response == yes) {
-                    alert.close();
-                    canvasHandler.getCanvasMap().exportMap("mapImage.png");
-                } else {
-                    alert.close();
-                }
-            });
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Save Map");
+            fileChooser.setInitialFileName("Map.png");
+            File savedFile = fileChooser.showSaveDialog(primaryStage);
+
+            if (savedFile != null) {
+                canvasHandler.getCanvasMap().exportMap(savedFile);
+            }
         });
 
 
