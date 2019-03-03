@@ -46,8 +46,17 @@ public class CanvasMap {
         return new Rectangle(0, 0, tileMatrix.size() * Tile.TILE_WIDTH, tileMatrix.get(0).size() * Tile.TILE_HEIGHT);
     }
 
-    public void setTile(String path, int x, int y) {
+    public Tile setTile(String path, int x, int y) {
+        Tile tile = tileMatrix.get(x).get(y);
+        if (tile.getPath().contains(path)){
+            return null;
+        }
         tileMatrix.get(x).set(y, new Tile(path));
+        return tile;
+    }
+
+    public void setTile(Tile tile, int x, int y) {
+        tileMatrix.get(x).set(y, tile);
     }
 
     public void exportMap(File file) {

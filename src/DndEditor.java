@@ -44,7 +44,6 @@ public class DndEditor extends Application {
         gridPane.getColumnConstraints().addAll(canvasConstraint, editorConstraint);
 
         gridPane.add(itemOverlay.getMenuBar(), 0, 0 , 2, 1);
-        handler.draw();
         gridPane.add(handler.getCanvas(), 0, 1, 1, 2);
         ImageView imageView = new ImageView();
         imageView.setFitHeight(200);
@@ -52,8 +51,6 @@ public class DndEditor extends Application {
         imageView.setImage(new Image(new File("resources/tiles/dirt.png").toURI().toString()));
         gridPane.add(imageView, 1, 1);
         gridPane.add(itemOverlay.getEditorMenu(), 1, 2);
-
-        handler.draw();
 
         itemOverlay.setCanvasHandler(handler);
 

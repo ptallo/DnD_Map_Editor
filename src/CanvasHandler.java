@@ -1,9 +1,15 @@
+import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
+
+import java.util.HashMap;
+import java.util.Stack;
 
 
 public class CanvasHandler {
@@ -15,14 +21,22 @@ public class CanvasHandler {
     private Double dragX;
     private Double dragY;
 
+    private Stack<Point2D> undoStack;
+    private HashMap<Point2D, Tile> undoHashMap;
+
+    private Boolean ctrlPressed;
+
     public CanvasHandler(GridPane gp, ItemOverlay overlay) {
         this.canvas = new Canvas(1000, 1000);
         this.gc = canvas.getGraphicsContext2D();
         this.canvasMap = new CanvasMap();
         this.overlay = overlay;
+        this.undoStack = new Stack<>();
+        this.undoHashMap = new HashMap<>();
 
         canvas.heightProperty().bind(gp.heightProperty().subtract(25));
         canvas.widthProperty().bind(gp.widthProperty().multiply(0.85));
+        canvas.setFocusTraversable(true);
 
         canvas.addEventHandler(MouseEvent.MOUSE_DRAGGED, event -> {
             if (event.isControlDown()) {
@@ -44,13 +58,40 @@ public class CanvasHandler {
                 draw();
             }
         });
+
+        canvas.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode() == KeyCode.Z && ctrlPressed) {
+                if (!undoStack.empty()) {
+                    Point2D point2D = undoStack.pop();
+                    Tile tile = undoHashMap.get(point2D);
+                    canvasMap.setTile(tile, (int) point2D.getX(), (int) point2D.getY());
+                    draw();
+                }
+            } else if (event.getCode() == KeyCode.CONTROL) {
+                ctrlPressed = true;
+            }
+        });
+
+        canvas.addEventFilter(KeyEvent.KEY_RELEASED, event -> {
+            if (event.getCode() == KeyCode.CONTROL) {
+                ctrlPressed = false;
+            }
+        });
     }
 
     private void setTile(ItemOverlay overlay, MouseEvent event) {
-        canvasMap.setTile(overlay.getActiveTilePath(),
-                (int) (event.getX() - gc.getTransform().getTx()) / Tile.TILE_WIDTH,
-                (int) (event.getY() - gc.getTransform().getTy()) / Tile.TILE_HEIGHT
+        int x = (int) (event.getX() - gc.getTransform().getTx()) / Tile.TILE_WIDTH;
+        int y = (int) (event.getY() - gc.getTransform().getTy()) / Tile.TILE_HEIGHT;
+        Tile tile = canvasMap.setTile(overlay.getActiveTilePath(),
+                x,
+                y
         );
+
+        if (tile != null) {
+            Point2D point2D = new Point2D(x, y);
+            undoStack.push(point2D);
+            undoHashMap.put(point2D, tile);
+        }
     }
 
     private void handleDragMap(MouseEvent event) {
