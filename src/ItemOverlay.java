@@ -9,6 +9,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.BufferedInputStream;
@@ -54,6 +55,17 @@ public class ItemOverlay extends ScrollPane {
         toggleGroup.getToggles().addAll(editorMode, gameMode);
 
         MenuItem export = new MenuItem("Export Map");
+        MenuItem load = new MenuItem("Load Map");
+        MenuItem save = new MenuItem("Save Map");
+
+        save.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                FileChooser fileChooser = new FileChooser();
+                fileChooser.setTitle("Save Map");
+                fileChooser.setInitialFileName("Map");
+            }
+        });
 
         export.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -79,7 +91,6 @@ public class ItemOverlay extends ScrollPane {
         });
 
 
-
         editorMode.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -88,7 +99,7 @@ public class ItemOverlay extends ScrollPane {
         });
 
         // Add submenus to parent button
-        file.getItems().add(export);
+        file.getItems().addAll(save, load, export);
         view.getItems().addAll(gameMode, editorMode);
 
         // Add to menu bar
