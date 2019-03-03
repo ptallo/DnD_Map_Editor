@@ -20,7 +20,7 @@ public class ItemOverlay extends ScrollPane {
     private GridPane gridPane;
     private ListView listView;
     private Map<String, String> itemMap;
-    private String activeTilePath;
+    private String activeTilePath = "tiles/dirt.png";
 
     public ItemOverlay(Stage primaryStage, GridPane grid) {
         itemMap = new HashMap<>();
@@ -72,14 +72,11 @@ public class ItemOverlay extends ScrollPane {
         listView.setItems(observableList);
 
         listView.getSelectionModel().selectedItemProperty().addListener(
-                new ChangeListener() {
-                    @Override
-                    public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-                        setActiveTilePath(newValue.toString());
-                        ImageView imageView = new ImageView();
-                        imageView.setImage(new Image(new File("resources/" + activeTilePath).toURI().toString()));
-                        gridPane.add(imageView, 1, 1);
-                    }
+                (observable, oldValue, newValue) -> {
+                    setActiveTilePath(newValue.toString());
+                    ImageView imageView = new ImageView();
+                    imageView.setImage(new Image(new File("resources/" + activeTilePath).toURI().toString()));
+                    gridPane.add(imageView, 1, 1);
                 }
 
         );
@@ -87,10 +84,6 @@ public class ItemOverlay extends ScrollPane {
 
     private void setActiveTilePath(String newValue) {
         activeTilePath = itemMap.get(newValue);
-    }
-
-    private String getActiveTilePath() {
-        return activeTilePath;
     }
 
     public ListView getEditorMenu() {
@@ -102,5 +95,9 @@ public class ItemOverlay extends ScrollPane {
 
     public MenuBar getMenuBar() {
         return menuBar;
+    }
+
+    public String getActiveTilePath() {
+        return activeTilePath;
     }
 }
