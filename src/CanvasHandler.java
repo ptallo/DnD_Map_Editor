@@ -1,4 +1,3 @@
-import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
@@ -29,8 +28,9 @@ public class CanvasHandler {
             if (event.isControlDown()) {
                 handleDragMap(event);
             } else {
-                drawTile(overlay, event);
+                setTile(overlay, event);
             }
+            draw();
         });
 
         canvas.addEventHandler(MouseEvent.MOUSE_RELEASED, event -> {
@@ -39,11 +39,12 @@ public class CanvasHandler {
         });
 
         canvas.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            drawTile(overlay, event);
+            setTile(overlay, event);
+            draw();
         });
     }
 
-    private void drawTile(ItemOverlay overlay, MouseEvent event) {
+    private void setTile(ItemOverlay overlay, MouseEvent event) {
         canvasMap.setTile(overlay.getActiveTilePath(),
                 (int) (event.getX() - gc.getTransform().getTx()) / Tile.TILE_WIDTH,
                 (int) (event.getY() - gc.getTransform().getTy()) / Tile.TILE_HEIGHT
@@ -84,13 +85,8 @@ public class CanvasHandler {
     }
 
     public void draw() {
-        new AnimationTimer() {
-            @Override
-            public void handle(long now) {
-                gc.clearRect(-gc.getTransform().getTx(), -gc.getTransform().getTy(), canvas.getWidth(), canvas.getHeight());
-                canvasMap.draw(gc);
-            }
-        }.start();
+        gc.clearRect(-gc.getTransform().getTx(), -gc.getTransform().getTy(), canvas.getWidth(), canvas.getHeight());
+        canvasMap.draw(gc);
     }
 
     public Canvas getCanvas() {

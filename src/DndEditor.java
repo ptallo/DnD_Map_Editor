@@ -53,15 +53,13 @@ public class DndEditor extends Application {
         gridPane.add(imageView, 1, 1);
         gridPane.add(itemOverlay.getEditorMenu(), 1, 2);
 
-        handler.draw();
-
         // For debugging
         gridPane.setGridLinesVisible(true);
 
         primaryStage.setScene(new Scene(gridPane));
-        primaryStage.show();
-
-        // set full screen
         primaryStage.setFullScreen(true);
+
+        primaryStage.show();
+        handler.draw();
     }
 }
