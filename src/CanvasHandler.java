@@ -23,6 +23,7 @@ public class CanvasHandler {
         this.overlay = overlay;
 
         canvas.heightProperty().bind(gp.heightProperty().subtract(25));
+        canvas.widthProperty().bind(gp.widthProperty().multiply(0.85));
 
         canvas.addEventHandler(MouseEvent.MOUSE_DRAGGED, event -> {
             if (event.isControlDown()) {
@@ -35,6 +36,10 @@ public class CanvasHandler {
         canvas.addEventHandler(MouseEvent.MOUSE_RELEASED, event -> {
             this.dragX = null;
             this.dragY = null;
+        });
+
+        canvas.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            drawTile(overlay, event);
         });
     }
 
