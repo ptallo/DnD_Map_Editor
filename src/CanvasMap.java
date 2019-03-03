@@ -10,6 +10,7 @@ import javax.imageio.ImageIO;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Scanner;
 import java.util.Set;
 
 public class CanvasMap {
@@ -101,7 +102,7 @@ public class CanvasMap {
         PrintWriter pw = new PrintWriter(file);
 
         for (String p : pathToCodeMap.keySet()) {
-            pw.write(p + ", " + pathToCodeMap.get(p) + "\n");
+            pw.write(p + "," + pathToCodeMap.get(p) + "\n");
         }
         pw.write("\n");
 
@@ -115,7 +116,31 @@ public class CanvasMap {
         pw.close();
     }
 
-    public void loadMap(String path) {
+    public void loadMap(String path) throws FileNotFoundException {
+        Scanner scanner = new Scanner(new File("resources/maps/" + path));
+        HashMap<String, String> codeToPathMap = new HashMap<>();
 
+        String line;
+        while (scanner.hasNext()) {
+            line = scanner.nextLine();
+            if (line.equals("")) {
+                break;
+            }
+            String[] splitA = line.split(",");
+            codeToPathMap.put(splitA[1], splitA[0]);
+        }
+
+        tileMatrix = new ArrayList<>();
+        while (scanner.hasNext()) {
+            line = scanner.nextLine();
+            ArrayList<Tile> row = new ArrayList<>();
+            for (char c : line.toCharArray()) {
+                String path1 = codeToPathMap.get(String.valueOf(c));
+                String[] pathAttributes = path1.split("/");
+                path1 = pathAttributes[1] + "/" + pathAttributes[2];
+                row.add(new Tile(path1));
+            }
+            tileMatrix.add(row);
+        }
     }
 }
