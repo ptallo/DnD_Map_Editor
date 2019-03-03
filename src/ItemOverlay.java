@@ -20,7 +20,7 @@ public class ItemOverlay extends ScrollPane {
     private GridPane gridPane;
     private ListView listView;
     private Map<String, String> itemMap;
-    private String activeTilePath;
+    private String activeTilePath = "tiles/dirt.png";
 
     public ItemOverlay(Stage primaryStage, GridPane grid) {
         itemMap = new HashMap<>();
