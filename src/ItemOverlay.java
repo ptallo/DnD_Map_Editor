@@ -1,7 +1,6 @@
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.control.*;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -12,39 +11,42 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import sun.jvm.hotspot.utilities.Assert;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.*;
 import java.util.List;
 
 public class ItemOverlay extends ScrollPane {
 
-    private MenuBar menuBar;
-    private GridPane gridPane;
-    private ListView listView;
-    private Map<String, String> tileMap;
-    private String activeTilePath = "tiles/dirt.png";
     private CanvasHandler canvasHandler;
+    private GridPane gridPane;
+    private ImageView imageView;
+    private ListView tileNames;
+    private Map<String, String> tileMap;
+    private MenuBar menuBar;
+    private int mode = 1; // 0 is game; 1 is editor
+    private Stage primaryStage;
+    private String activeTilePath = "tiles/dirt.png";
 
-    public ItemOverlay(Stage primaryStage, GridPane grid) {
+    public ItemOverlay(Stage stage, GridPane grid) {
+        // Create and Populate Tile Map
         tileMap = new HashMap<>();
-//        tileMap.put("Dirt", "tiles/dirt.png");
-//        tileMap.put("Forest", "tiles/forest.png");
-//        tileMap.put("Grass", "tiles/grass.png");
-//        tileMap.put("Ocean", "tiles/ocean.png");
-//        tileMap.put("Road", "tiles/road.png");
+        populateTileMap();
 
-        populateItemMap();
-
+        // Give access to the grid and stage
         gridPane = grid;
+        primaryStage = stage;
+
+        // Create menus
         createEditorMenu();
         createMenuBar(primaryStage);
     }
 
+    // Create the menu bar and set up listeners
     private void createMenuBar(Stage primaryStage) {
         // Create menubar object
         menuBar = new MenuBar();
@@ -54,83 +56,25 @@ public class ItemOverlay extends ScrollPane {
         Menu edit = new Menu("Edit");
         Menu view = new Menu("View");
 
-        // Create submenus
+        // Create submenus for view
         ToggleGroup toggleGroup = new ToggleGroup();
         RadioMenuItem editorMode = new RadioMenuItem("Editor Mode");
         RadioMenuItem gameMode = new RadioMenuItem("Game Mode");
         toggleGroup.getToggles().addAll(editorMode, gameMode);
 
+        // Create submenus for file
         MenuItem export = new MenuItem("Export Map");
         MenuItem importTile = new MenuItem("Import Tile");
         MenuItem load = new MenuItem("Load Map");
         MenuItem save = new MenuItem("Save Map");
 
-        save.setOnAction(event -> {
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Save Map");
-            fileChooser.setInitialFileName("Map.txt");
-            File savedFile = fileChooser.showSaveDialog(primaryStage);
-
-            if (savedFile != null) {
-                try {
-                    canvasHandler.getCanvasMap().saveMap(savedFile);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        load.setOnAction(event -> {
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Load Map");
-            File loadFile = fileChooser.showOpenDialog(primaryStage);
-
-            if (loadFile != null) {
-                try {
-                    canvasHandler.getCanvasMap().loadMap(loadFile);
-                    canvasHandler.draw();
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        export.setOnAction(event -> {
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Save Map");
-            fileChooser.setInitialFileName("Map.png");
-            File savedFile = fileChooser.showSaveDialog(primaryStage);
-
-            if (savedFile != null) {
-                canvasHandler.getCanvasMap().exportMap(savedFile);
-            }
-        });
-
-        importTile.setOnAction(event -> {
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Import Tile");
-            File loadFile = fileChooser.showOpenDialog(primaryStage);
-            if (loadFile != null) {
-                try {
-                    File tempFile = new File("resources/tiles/" + loadFile.getName());
-                    Files.copy(loadFile.toPath(), tempFile.toPath());
-                    tileMap.put(tempFile.getName().split("\\.")[0], "tiles/" + tempFile.getName());
-                    listView.getItems().add(tempFile.getName().split("\\.")[0]);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        });
-
-        editorMode.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                setEditorMode();
-            }
-        });
+        // Set up listeners for menu bar options
+        save.setOnAction(this::doSave);
+        load.setOnAction(this::doLoad);
+        export.setOnAction(this::doExport);
+        importTile.setOnAction(this::importTile);
+        editorMode.setOnAction(this::setEditorMode);
+        gameMode.setOnAction(this::setGameMode);
 
         // Add submenus to parent button
         file.getItems().addAll(save, load, export, importTile);
@@ -143,37 +87,135 @@ public class ItemOverlay extends ScrollPane {
     }
 
     private void createEditorMenu() {
-        listView = new ListView();
+        // Initialize tileNames
+        tileNames = new ListView();
+        // Create list of tile names from the keys of the map
         List<String> l = new ArrayList<String>(tileMap.keySet());
+        // Create an observable list from the list l
         ObservableList<String> observableList = FXCollections.observableList(l);
-        listView.setItems(observableList);
-        listView.setPrefHeight(observableList.size() * 24 + 2);
+        // Set the items of the listview equal to the names from the tilemap
+        tileNames.setItems(observableList);
+        // Set height... Not sure if this works as intended
+        tileNames.setPrefHeight(observableList.size() * 24 + 2);
 
-        listView.getSelectionModel().selectedItemProperty().addListener(
+        //Set up listener for value change of list view
+        tileNames.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> {
+                    // Update the active tile path
                     setActiveTilePath(newValue.toString());
-                    ImageView imageView = new ImageView();
+                    // Create image view object
+                    imageView = new ImageView();
                     imageView.setImage(new Image(new File("resources/" + activeTilePath).toURI().toString()));
                     imageView.setFitHeight(200);
                     imageView.setFitWidth(200);
-                    gridPane.add(imageView, 1, 1);
+                    // Add image to gridpane
+                    gridPane.add(imageView, 1, 1, 2, 1);
                 }
 
         );
     }
 
-    private void setActiveTilePath(String newValue) {
-        activeTilePath = tileMap.get(newValue);
+    // Perform the save
+    private void doSave(ActionEvent event) {
+        // Create file chooser object
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save Map");
+        fileChooser.setInitialFileName("Map.txt");
+        // Show file chooser and take outputted file
+        File savedFile = fileChooser.showSaveDialog(primaryStage);
+
+        if (savedFile != null) {
+            try {
+                // Save the file
+                canvasHandler.getCanvasMap().saveMap(savedFile);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    // Perform the load
+    private void doLoad(ActionEvent event) {
+        // Create file chooser object
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Load Map");
+
+        // Show file chooser and take the outputted file
+        File loadFile = fileChooser.showOpenDialog(primaryStage);
+
+        if (loadFile != null) {
+            try {
+                // load the map and redraw the canvas
+                canvasHandler.getCanvasMap().loadMap(loadFile);
+                canvasHandler.draw();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    // Export the Map
+    private void doExport(ActionEvent event) {
+        // Create the file chooser object
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save Map");
+        fileChooser.setInitialFileName("Map.png");
+
+        // Show file chooser and take the outputted file
+        File savedFile = fileChooser.showSaveDialog(primaryStage);
+
+        if (savedFile != null) {
+            canvasHandler.getCanvasMap().exportMap(savedFile);
+        }
+    }
+
+    // Import Tile
+    private void importTile(ActionEvent event) {
+        // Create the file chooser object
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Import Tile");
+
+        // Show file chooser and take the outputted file
+        File loadFile = fileChooser.showOpenDialog(primaryStage);
+        if (loadFile != null) {
+            try {
+                // Create the corresponding file object
+                File tempFile = new File("resources/tiles/" + loadFile.getName());
+                Files.copy(loadFile.toPath(), tempFile.toPath());
+
+                // Get the name of file without extension
+                String tileName = tempFile.getName().split("\\.")[0];
+
+                // Add name to tile map and tile names
+                tileMap.put(tileName, "tiles/" + tempFile.getName());
+                tileNames.getItems().add(tileName);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public ListView getEditorMenu() {
-        return listView;
+        return tileNames;
     }
 
-    public void setEditorMode() {
+    public void setEditorMode(ActionEvent event) {
+        mode = 1;
     }
 
-    public void setCanvasHandler(CanvasHandler cHandler){
+    public void setGameMode(ActionEvent event) {
+        mode = 0;
+        gridPane.getChildren().remove(canvasHandler.getCanvas());
+        gridPane.getChildren().remove(this.getEditorMenu());
+        gridPane.getChildren().remove(imageView);
+        gridPane.add(canvasHandler.getCanvas(), 0, 1);
+    }
+
+    public int getMode() {
+        return mode;
+    }
+
+    public void setCanvasHandler(CanvasHandler cHandler) {
         canvasHandler = cHandler;
     }
 
@@ -185,7 +227,11 @@ public class ItemOverlay extends ScrollPane {
         return activeTilePath;
     }
 
-    private void populateItemMap() {
+    private void setActiveTilePath(String newValue) {
+        activeTilePath = tileMap.get(newValue);
+    }
+
+    private void populateTileMap() {
         File folder = new File("resources/tiles/");
         File[] listOfFiles = folder.listFiles();
 

@@ -35,7 +35,7 @@ public class CanvasHandler {
         this.undoHashMap = new HashMap<>();
 
         canvas.heightProperty().bind(gp.heightProperty().subtract(25));
-        canvas.widthProperty().bind(gp.widthProperty().multiply(0.85));
+        canvas.widthProperty().bind(gp.widthProperty().multiply(overlay.getMode() == 1 ? 0.85 : 1));
         canvas.setFocusTraversable(true);
 
         canvas.addEventHandler(MouseEvent.MOUSE_DRAGGED, event -> {
