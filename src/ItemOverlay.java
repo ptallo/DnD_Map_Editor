@@ -195,40 +195,20 @@ public class ItemOverlay extends ScrollPane {
         }
     }
 
+    public String getActiveTilePath() {
+        return activeTilePath;
+    }
+
     public ListView getEditorMenu() {
         return tileNames;
-    }
-
-    public void setEditorMode(ActionEvent event) {
-        mode = 1;
-    }
-
-    public void setGameMode(ActionEvent event) {
-        mode = 0;
-        gridPane.getChildren().remove(canvasHandler.getCanvas());
-        gridPane.getChildren().remove(this.getEditorMenu());
-        gridPane.getChildren().remove(imageView);
-        gridPane.add(canvasHandler.getCanvas(), 0, 1);
-    }
-
-    public int getMode() {
-        return mode;
-    }
-
-    public void setCanvasHandler(CanvasHandler cHandler) {
-        canvasHandler = cHandler;
     }
 
     public MenuBar getMenuBar() {
         return menuBar;
     }
 
-    public String getActiveTilePath() {
-        return activeTilePath;
-    }
-
-    private void setActiveTilePath(String newValue) {
-        activeTilePath = tileMap.get(newValue);
+    public int getMode() {
+        return mode;
     }
 
     private void populateTileMap() {
@@ -242,5 +222,25 @@ public class ItemOverlay extends ScrollPane {
                 }
             }
         }
+    }
+
+    private void setActiveTilePath(String newValue) {
+        activeTilePath = tileMap.get(newValue);
+    }
+
+    public void setCanvasHandler(CanvasHandler cHandler) {
+        canvasHandler = cHandler;
+    }
+
+    public void setEditorMode(ActionEvent event) {
+        mode = 1;
+    }
+
+    public void setGameMode(ActionEvent event) {
+        mode = 0;
+        gridPane.getChildren().remove(canvasHandler.getCanvas());
+        gridPane.getChildren().remove(this.getEditorMenu());
+        gridPane.getChildren().remove(imageView);
+        gridPane.add(canvasHandler.getCanvas(), 0, 1);
     }
 }
