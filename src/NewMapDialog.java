@@ -16,17 +16,16 @@ public class NewMapDialog extends VBox {
     private int padding = 30;
 
     public NewMapDialog(Stage primaryStage) {
-
         setSpacing(spacing);
         setPadding(new Insets(padding, padding, padding, padding));
 
         Text wText = new Text("Width");
-        wTextField = new TextField();
+        wTextField = new TextField("20");
         HBox widthBox = new HBox(wText, wTextField);
         widthBox.setSpacing(spacing);
 
         Text hText = new Text("Height");
-        hTextField = new TextField();
+        hTextField = new TextField("20");
         HBox heightBox = new HBox(hText, hTextField);
         heightBox.setSpacing(10);
 
