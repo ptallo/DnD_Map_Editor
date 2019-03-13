@@ -43,12 +43,17 @@ public class CanvasMap {
     }
 
     public Tile setTile(String path, int x, int y) {
-        Tile tile = tileMatrix.get(x).get(y);
-        if (tile.getPath().contains(path)){
-            return null;
+        if (x < tileMatrix.size()) {
+            if (y < tileMatrix.get(x).size()) {
+                Tile tile = tileMatrix.get(x).get(y);
+                if (tile.getPath().contains(path)){
+                    return null;
+                }
+                tileMatrix.get(x).set(y, new Tile(path));
+                return tile;
+            }
         }
-        tileMatrix.get(x).set(y, new Tile(path));
-        return tile;
+        return null;
     }
 
     public void setTile(Tile tile, int x, int y) {
