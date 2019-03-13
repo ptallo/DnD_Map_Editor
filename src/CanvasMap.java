@@ -22,11 +22,7 @@ public class CanvasMap {
         for (int i = 0; i < 50; i++) {
             ArrayList<Tile> column = new ArrayList<>();
             for (int j = 0; j < 50; j++) {
-                if (i == 0 || i == 49) {
-                    column.add(new Tile("tiles/dirt.png"));
-                } else {
-                    column.add(new Tile("tiles/grass.png"));
-                }
+                column.add(new Tile("tiles/grass.png"));
             }
             tileMatrix.add(column);
         }
@@ -59,7 +55,7 @@ public class CanvasMap {
         tileMatrix.get(x).set(y, tile);
     }
 
-    public void exportMap(File file) {
+    public void exportMapToPng(File file) {
         WritableImage writableImage = new WritableImage(
                 tileMatrix.size() * Tile.TILE_WIDTH,
                 tileMatrix.get(0).size() * Tile.TILE_HEIGHT
@@ -67,9 +63,9 @@ public class CanvasMap {
 
         for (int i = 0; i < tileMatrix.size(); i++) {
             for (int j = 0; j < tileMatrix.get(i).size(); j++) {
-                writeImageAt(
-                        writableImage,
+                writeImageToWritableImage(
                         tileMatrix.get(i).get(j).getImage(),
+                        writableImage,
                         i * Tile.TILE_WIDTH,
                         j * Tile.TILE_HEIGHT
                 );
@@ -83,18 +79,18 @@ public class CanvasMap {
         }
     }
 
-    private void writeImageAt(WritableImage writableImage, Image test, int startX, int startY) {
-        for (int x = 0; x < test.getWidth(); x++) {
-            for (int y = 0; y < test.getHeight(); y++) {
+    private void writeImageToWritableImage(Image imageToWrite, WritableImage writableImage, int startX, int startY) {
+        for (int x = 0; x < imageToWrite.getWidth(); x++) {
+            for (int y = 0; y < imageToWrite.getHeight(); y++) {
                 writableImage.getPixelWriter().setColor(
                         startX + x,
                         startY + y,
-                        test.getPixelReader().getColor(x, y));
+                        imageToWrite.getPixelReader().getColor(x, y));
             }
         }
     }
 
-    public void saveMap(File file) throws FileNotFoundException {
+    public void exportMapToText(File file) throws FileNotFoundException {
         HashMap<String, String> pathToCodeMap = new HashMap<>();
 
         for (int i = 0; i < tileMatrix.size(); i++) {
@@ -124,7 +120,7 @@ public class CanvasMap {
         pw.close();
     }
 
-    public void loadMap(File file) throws FileNotFoundException {
+    public void loadMapFromText(File file) throws FileNotFoundException {
         Scanner scanner = new Scanner(file);
         HashMap<String, String> codeToPathMap = new HashMap<>();
 

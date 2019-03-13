@@ -38,6 +38,33 @@ public class CanvasHandler {
         canvas.widthProperty().bind(gp.widthProperty().multiply(overlay.getMode() == 1 ? 0.85 : 1));
         canvas.setFocusTraversable(true);
 
+        addMouseEventListeners(overlay);
+
+        addKeyEventListeners();
+    }
+
+    private void addKeyEventListeners() {
+        canvas.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode() == KeyCode.Z && ctrlPressed) {
+                if (!undoStack.empty()) {
+                    Point2D point2D = undoStack.pop();
+                    Tile tile = undoHashMap.get(point2D);
+                    canvasMap.setTile(tile, (int) point2D.getX(), (int) point2D.getY());
+                    draw();
+                }
+            } else if (event.getCode() == KeyCode.CONTROL) {
+                ctrlPressed = true;
+            }
+        });
+
+        canvas.addEventFilter(KeyEvent.KEY_RELEASED, event -> {
+            if (event.getCode() == KeyCode.CONTROL) {
+                ctrlPressed = false;
+            }
+        });
+    }
+
+    private void addMouseEventListeners(ItemOverlay overlay) {
         canvas.addEventHandler(MouseEvent.MOUSE_DRAGGED, event -> {
             if (event.isControlDown()) {
                 handleDragMap(event);
@@ -56,25 +83,6 @@ public class CanvasHandler {
             if (!event.isControlDown()) {
                 setTile(overlay, event);
                 draw();
-            }
-        });
-
-        canvas.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-            if (event.getCode() == KeyCode.Z && ctrlPressed) {
-                if (!undoStack.empty()) {
-                    Point2D point2D = undoStack.pop();
-                    Tile tile = undoHashMap.get(point2D);
-                    canvasMap.setTile(tile, (int) point2D.getX(), (int) point2D.getY());
-                    draw();
-                }
-            } else if (event.getCode() == KeyCode.CONTROL) {
-                ctrlPressed = true;
-            }
-        });
-
-        canvas.addEventFilter(KeyEvent.KEY_RELEASED, event -> {
-            if (event.getCode() == KeyCode.CONTROL) {
-                ctrlPressed = false;
             }
         });
     }

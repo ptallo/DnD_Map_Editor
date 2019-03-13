@@ -11,7 +11,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import sun.jvm.hotspot.utilities.Assert;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -127,7 +126,7 @@ public class ItemOverlay extends ScrollPane {
         if (savedFile != null) {
             try {
                 // Save the file
-                canvasHandler.getCanvasMap().saveMap(savedFile);
+                canvasHandler.getCanvasMap().exportMapToText(savedFile);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
@@ -146,7 +145,7 @@ public class ItemOverlay extends ScrollPane {
         if (loadFile != null) {
             try {
                 // load the map and redraw the canvas
-                canvasHandler.getCanvasMap().loadMap(loadFile);
+                canvasHandler.getCanvasMap().loadMapFromText(loadFile);
                 canvasHandler.draw();
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -165,7 +164,7 @@ public class ItemOverlay extends ScrollPane {
         File savedFile = fileChooser.showSaveDialog(primaryStage);
 
         if (savedFile != null) {
-            canvasHandler.getCanvasMap().exportMap(savedFile);
+            canvasHandler.getCanvasMap().exportMapToPng(savedFile);
         }
     }
 
