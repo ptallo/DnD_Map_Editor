@@ -4,6 +4,9 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import javafx.stage.Stage;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+
 public class DndEditor extends GridPane {
         private ItemOverlay itemOverlay;
         private CanvasHandler canvasHandler;
@@ -18,6 +21,12 @@ public class DndEditor extends GridPane {
         add(itemOverlay.getMenuBar(), 0, 0, 2, 1);
         add(canvasHandler.getCanvas(), 0, 1, 1, 2);
         add(itemOverlay.getEditorMenu(), 1, 2);
+    }
+
+    public DndEditor(Stage primaryStage, File file) throws FileNotFoundException {
+        this(primaryStage);
+        canvasHandler.getCanvasMap().loadMapFromText(file);
+        canvasHandler.draw();
     }
 
     private void initializeRowColumnConstraints() {

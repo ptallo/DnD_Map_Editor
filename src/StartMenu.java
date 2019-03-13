@@ -43,14 +43,14 @@ public class StartMenu extends VBox {
             File savedFile = chooser.showOpenDialog(primaryStage);
 
             if (savedFile != null) {
-                DndEditor editor = new DndEditor(primaryStage);
                 try {
-                    editor.getCanvasHandler().getCanvasMap().loadMapFromText(savedFile);
+                    DndEditor editor = new DndEditor(primaryStage, savedFile);
+                    primaryStage.setScene(new Scene(editor));
+                    primaryStage.setFullScreen(true);
+                    editor.getCanvasHandler().draw();
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
-                editor.getCanvasHandler().draw();
-                primaryStage.setScene(new Scene(editor));
             }
 
         });
