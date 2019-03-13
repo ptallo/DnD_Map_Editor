@@ -32,9 +32,21 @@ public class StartMenu extends VBox {
         Button newMapButton = new Button("New Map");
         newMapButton.setMaxWidth(Double.MAX_VALUE);
         newMapButton.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
-            System.out.println("new map button");
+            DndEditor editor = new DndEditor(primaryStage, 15 , 15);
+            primaryStage.setScene(new Scene(editor));
+            primaryStage.setFullScreen(true);
+            editor.getCanvasHandler().draw();
         });
 
+        Button loadMapButton = createLoadMapButton(primaryStage);
+
+        getChildren().addAll(menuTitle, newMapButton, loadMapButton);
+        for (Node child: getChildren()) {
+            setVgrow(child, Priority.ALWAYS);
+        }
+    }
+
+    private Button createLoadMapButton(Stage primaryStage) {
         Button loadMapButton = new Button("Load Map");
         loadMapButton.setMaxWidth(Double.MAX_VALUE);
         loadMapButton.addEventFilter(MouseEvent.MOUSE_CLICKED, event ->  {
@@ -52,13 +64,8 @@ public class StartMenu extends VBox {
                     e.printStackTrace();
                 }
             }
-
         });
-
-        getChildren().addAll(menuTitle, newMapButton, loadMapButton);
-        for (Node child: getChildren()) {
-            setVgrow(child, Priority.ALWAYS);
-        }
+        return loadMapButton;
     }
 
 }

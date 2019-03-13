@@ -29,6 +29,18 @@ public class DndEditor extends GridPane {
         canvasHandler.draw();
     }
 
+    public DndEditor(Stage primaryStage, int h, int w) {
+        itemOverlay = new ItemOverlay(primaryStage, this);
+        canvasHandler = new CanvasHandler(this, itemOverlay, h, w);
+        itemOverlay.setCanvasHandler(canvasHandler);
+
+        initializeRowColumnConstraints();
+
+        add(itemOverlay.getMenuBar(), 0, 0, 2, 1);
+        add(canvasHandler.getCanvas(), 0, 1, 1, 2);
+        add(itemOverlay.getEditorMenu(), 1, 2);
+    }
+
     private void initializeRowColumnConstraints() {
         RowConstraints menuRow = new RowConstraints(25);
         getRowConstraints().add(0, menuRow);

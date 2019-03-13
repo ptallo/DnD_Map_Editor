@@ -18,10 +18,10 @@ public class CanvasMap {
 
     private ArrayList<ArrayList<Tile>> tileMatrix = new ArrayList<>();
 
-    public CanvasMap() {
-        for (int i = 0; i < 50; i++) {
+    public CanvasMap(int h, int w) {
+        for (int i = 0; i < h; i++) {
             ArrayList<Tile> column = new ArrayList<>();
-            for (int j = 0; j < 50; j++) {
+            for (int j = 0; j < w; j++) {
                 column.add(new Tile("tiles/grass.png"));
             }
             tileMatrix.add(column);
