@@ -32,10 +32,8 @@ public class StartMenu extends VBox {
         Button newMapButton = new Button("New Map");
         newMapButton.setMaxWidth(Double.MAX_VALUE);
         newMapButton.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
-            DndEditor editor = new DndEditor(primaryStage, 15 , 15);
-            primaryStage.setScene(new Scene(editor));
-            primaryStage.setFullScreen(true);
-            editor.getCanvasHandler().draw();
+            NewMapDialog mapDialog = new NewMapDialog(primaryStage);
+            primaryStage.setScene(new Scene(mapDialog));
         });
 
         Button loadMapButton = createLoadMapButton(primaryStage);
