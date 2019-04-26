@@ -1,4 +1,4 @@
-package gui;
+package view.menu;
 
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -34,7 +34,7 @@ public class StartMenu extends VBox {
         Button newMapButton = new Button("New Map");
         newMapButton.setMaxWidth(Double.MAX_VALUE);
         newMapButton.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
-            NewMapDialog mapDialog = new NewMapDialog(primaryStage);
+            NewMapMenu mapDialog = new NewMapMenu(primaryStage);
             primaryStage.setScene(new Scene(mapDialog));
         });
 
@@ -56,7 +56,7 @@ public class StartMenu extends VBox {
 
             if (savedFile != null) {
                 try {
-                    DndEditor editor = new DndEditor(primaryStage, savedFile);
+                    EditorMenu editor = new EditorMenu(primaryStage, savedFile);
                     primaryStage.setScene(new Scene(editor));
                     primaryStage.setFullScreen(true);
                     editor.getCanvasHandler().draw();

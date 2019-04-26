@@ -1,4 +1,4 @@
-package gui;
+package controller;
 
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
@@ -11,6 +11,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import model.CanvasMap;
 import model.Tile;
+import view.ItemOverlay;
 
 import java.util.HashMap;
 import java.util.Stack;
@@ -20,7 +21,6 @@ public class CanvasHandler {
     private Canvas canvas;
     private GraphicsContext gc;
     private CanvasMap canvasMap;
-    private ItemOverlay overlay;
 
     private Double dragX;
     private Double dragY;
@@ -34,11 +34,10 @@ public class CanvasHandler {
         this.canvas = new Canvas(1000, 1000);
         this.gc = canvas.getGraphicsContext2D();
         this.canvasMap = new CanvasMap(50, 50);
-        this.overlay = overlay;
         this.undoStack = new Stack<>();
         this.undoHashMap = new HashMap<>();
 
-        canvas.heightProperty().bind(gp.heightProperty().subtract(25));
+        canvas.heightProperty().bind(gp.heightProperty().subtract(26));
         canvas.widthProperty().bind(gp.widthProperty().multiply(overlay.getMode() == 1 ? 0.85 : 1));
         canvas.setFocusTraversable(true);
 
@@ -51,7 +50,6 @@ public class CanvasHandler {
         this.canvas = new Canvas(1000, 1000);
         this.gc = canvas.getGraphicsContext2D();
         this.canvasMap = new CanvasMap(h, w);
-        this.overlay = overlay;
         this.undoStack = new Stack<>();
         this.undoHashMap = new HashMap<>();
 

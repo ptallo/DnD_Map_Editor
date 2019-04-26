@@ -1,4 +1,4 @@
-package gui;
+package view.menu;
 
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -11,13 +11,13 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 
-public class NewMapDialog extends VBox {
+public class NewMapMenu extends VBox {
     private TextField wTextField;
     private TextField hTextField;
     private int spacing = 10;
     private int padding = 30;
 
-    public NewMapDialog(Stage primaryStage) {
+    public NewMapMenu(Stage primaryStage) {
         setSpacing(spacing);
         setPadding(new Insets(padding, padding, padding, padding));
 
@@ -42,7 +42,7 @@ public class NewMapDialog extends VBox {
         Button createMapButton = new Button("Create Map");
         createMapButton.setMaxWidth(Double.MAX_VALUE);
         createMapButton.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
-            DndEditor editor = new DndEditor(
+            EditorMenu editor = new EditorMenu(
                     primaryStage, Integer.parseInt(wTextField.getText()),
                     Integer.parseInt(hTextField.getText())
             );

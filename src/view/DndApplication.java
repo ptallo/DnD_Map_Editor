@@ -1,6 +1,6 @@
-package gui;
+package view;
 
-import gui.StartMenu;
+import view.menu.StartMenu;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -12,7 +12,7 @@ public class DndApplication extends Application {
 
         // Create grid pane and add item
         StartMenu startMenu = new StartMenu(primaryStage);
-//        gui.DndEditor editor = new gui.DndEditor(primaryStage);
+//        view.menu.EditorMenu editor = new view.menu.EditorMenu(primaryStage);
 
         primaryStage.setScene(new Scene(startMenu));
 //        primaryStage.setFullScreen(true);

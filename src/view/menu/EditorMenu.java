@@ -1,5 +1,7 @@
-package gui;
+package view.menu;
 
+import controller.CanvasHandler;
+import view.ItemOverlay;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
@@ -9,11 +11,11 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.io.FileNotFoundException;
 
-public class DndEditor extends GridPane {
+public class EditorMenu extends GridPane {
         private ItemOverlay itemOverlay;
         private CanvasHandler canvasHandler;
 
-    public DndEditor(Stage primaryStage) {
+    public EditorMenu(Stage primaryStage) {
         itemOverlay = new ItemOverlay(primaryStage, this);
         canvasHandler = new CanvasHandler(this, itemOverlay);
         itemOverlay.setCanvasHandler(canvasHandler);
@@ -25,13 +27,13 @@ public class DndEditor extends GridPane {
         add(itemOverlay.getEditorMenu(), 1, 2);
     }
 
-    public DndEditor(Stage primaryStage, File file) throws FileNotFoundException {
+    public EditorMenu(Stage primaryStage, File file) throws FileNotFoundException {
         this(primaryStage);
         canvasHandler.getCanvasMap().loadMapFromText(file);
         canvasHandler.draw();
     }
 
-    public DndEditor(Stage primaryStage, int h, int w) {
+    public EditorMenu(Stage primaryStage, int h, int w) {
         itemOverlay = new ItemOverlay(primaryStage, this);
         canvasHandler = new CanvasHandler(this, itemOverlay, h, w);
         itemOverlay.setCanvasHandler(canvasHandler);
