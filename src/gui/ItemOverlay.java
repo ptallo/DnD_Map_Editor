@@ -1,3 +1,5 @@
+package gui;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -32,7 +34,7 @@ public class ItemOverlay extends ScrollPane {
     private String activeTilePath = "tiles/dirt.png";
 
     public ItemOverlay(Stage stage, GridPane grid) {
-        // Create and Populate Tile Map
+        // Create and Populate model.Tile Map
         tileMap = new HashMap<>();
         populateTileMap();
 
@@ -63,7 +65,7 @@ public class ItemOverlay extends ScrollPane {
 
         // Create submenus for file
         MenuItem export = new MenuItem("Export Map");
-        MenuItem importTile = new MenuItem("Import Tile");
+        MenuItem importTile = new MenuItem("Import model.Tile");
         MenuItem load = new MenuItem("Load Map");
         MenuItem save = new MenuItem("Save Map");
 
@@ -168,11 +170,11 @@ public class ItemOverlay extends ScrollPane {
         }
     }
 
-    // Import Tile
+    // Import model.Tile
     private void importTile(ActionEvent event) {
         // Create the file chooser object
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Import Tile");
+        fileChooser.setTitle("Import model.Tile");
 
         // Show file chooser and take the outputted file
         File loadFile = fileChooser.showOpenDialog(primaryStage);

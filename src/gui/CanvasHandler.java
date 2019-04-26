@@ -1,3 +1,5 @@
+package gui;
+
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -7,6 +9,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
+import model.CanvasMap;
+import model.Tile;
 
 import java.util.HashMap;
 import java.util.Stack;
@@ -41,7 +45,7 @@ public class CanvasHandler {
         addMouseEventListeners(overlay);
 
         addKeyEventListeners();
-        }
+    }
 
     public CanvasHandler(GridPane gp, ItemOverlay overlay, int h, int w) {
         this.canvas = new Canvas(1000, 1000);
